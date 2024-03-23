@@ -29,6 +29,7 @@ func main() {
 		todos, err := handler.List()
 		if err != nil {
 			fmt.Println(err)
+			break
 		}
 		fmt.Printf("%v\n", todos)
 		break
@@ -37,6 +38,7 @@ func main() {
 		todo, err := handler.Add(cmd.Add.Name)
 		if err != nil {
 			fmt.Println(err)
+			break
 		}
 		fmt.Printf("%v\n", todo)
 		break

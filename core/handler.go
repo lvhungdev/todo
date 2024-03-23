@@ -32,7 +32,7 @@ func (h *Handler) Add(name string) (Todo, error) {
 	}
 
 	todo := &Todo{
-		name: name,
+		Name: name,
 	}
 
 	err := h.repo.Create(todo)
