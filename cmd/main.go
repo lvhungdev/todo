@@ -29,21 +29,21 @@ func main() {
 		todos, err := handler.List()
 		if err != nil {
 			fmt.Println(err)
-			break
+			return
 		}
 		fmt.Printf("%v\n", todos)
-		break
+		return
 
 	case parser.CmdAdd:
 		todo, err := handler.Add(cmd.Add.Name)
 		if err != nil {
 			fmt.Println(err)
-			break
+			return
 		}
 		fmt.Printf("%v\n", todo)
-		break
+		return
 
 	default:
-		break
+		return
 	}
 }

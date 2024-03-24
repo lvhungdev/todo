@@ -65,10 +65,28 @@ func parseAdd(args []string) (Result, error) {
 		return Result{}, errors.New("[ERR] name is required")
 	}
 
+	nameArgs := []string{}
+	// dueDate := time.Time{}
+	// priority := core.PriNone
+
+	for _, arg := range args {
+		option := strings.Split(arg, "=")
+		if len(option) == 2 {
+			switch option[0] {
+			case "due":
+			case "pri":
+			default:
+				break
+			}
+		}
+
+		nameArgs = append(nameArgs, arg)
+	}
+
 	return Result{
 		Command: CmdAdd,
 		Add: resultAdd{
-			Name: strings.Join(args, " "),
+			Name: strings.Join(nameArgs, " "),
 		},
 	}, nil
 }

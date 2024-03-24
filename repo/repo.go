@@ -28,7 +28,12 @@ func (r *Repo) Init(driverName string, dataSourceName string) error {
     CREATE TABLE IF NOT EXISTS todos
     (
         id             INTEGER PRIMARY KEY,
-        name           TEXT NOT NULL
+        name           TEXT NOT NULL,
+        created_date   DATETIME NOT NULL,
+        completed_date DATETIME,
+        is_completed   INTEGER NOT NULL,
+        due_date       DATETIME,
+        priority       INTEGER
     )
     `)
 	if err != nil {
