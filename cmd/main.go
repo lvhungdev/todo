@@ -18,7 +18,7 @@ func main() {
 
 	handler := core.NewHandler(repo)
 
-	cmd, err := parser.Parse(os.Args[1:])
+	cmd, err := parser.ParseCmd(os.Args[1:])
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -31,16 +31,16 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		fmt.Printf("%v\n", todos)
+		fmt.Printf("%+v\n", todos)
 		return
 
 	case parser.CmdAdd:
-		todo, err := handler.Add(cmd.Add.Name)
+		todo, err := handler.Add(cmd.Add.Name, cmd.Add.Due)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Printf("%v\n", todo)
+		fmt.Printf("%+v\n", todo)
 		return
 
 	default:

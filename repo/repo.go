@@ -58,9 +58,31 @@ func (r *Repo) GetById(id int) (core.Todo, error) {
 }
 
 func (r *Repo) Create(todo *core.Todo) error {
-	tx := r.db.MustBegin()
-	tx.NamedExec("INSERT INTO todos (name) VALUES (:name)", todo)
-	err := tx.Commit()
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	result, err := tx.Exec(`
+    INSERT INTO todos
+    (name, created_date, completed_date, is_completed, due_date, priority)
+    VALUES
+    ($1, $2, $3, $4, $5, $6)
+    `, todo.Name, todo.CreatedDate, todo.CompletedDate, todo.IsCompleted, todo.DueDate, todo.Priority)
+	if err != nil {
+		return err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+	todo.Id = int(id)
+
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
 
 	return err
 }

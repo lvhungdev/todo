@@ -1,6 +1,9 @@
 package core
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Repo interface {
 	Get() ([]Todo, error)
@@ -26,13 +29,18 @@ func (h *Handler) List() ([]Todo, error) {
 	return h.repo.Get()
 }
 
-func (h *Handler) Add(name string) (Todo, error) {
+func (h *Handler) Add(name string, due time.Time) (Todo, error) {
 	if len(name) == 0 {
 		return Todo{}, errors.New("[ERR] name is required")
 	}
 
 	todo := &Todo{
-		Name: name,
+		Name:          name,
+		CreatedDate:   time.Now(),
+		CompletedDate: time.Time{},
+		IsCompleted:   false,
+		DueDate:       due,
+		Priority:      PriNone,
 	}
 
 	err := h.repo.Create(todo)
