@@ -31,7 +31,11 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		fmt.Printf("%+v\n", todos)
+
+		for _, todo := range todos {
+			fmt.Println(todo)
+		}
+
 		return
 
 	case parser.CmdAdd:
