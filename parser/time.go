@@ -19,6 +19,8 @@ func parseTime(value string) (time.Time, error) {
 	return time.Time{}, errors.New(fmt.Sprintf("[ERR] invalid time format %v", value))
 }
 
+// TODO timezone for some reason not working
+// fix this
 func parseAbsoluteTime(value string) (time.Time, error) {
 	if parsedTime, err := time.Parse("2006-01-02T15:04:05", value); err == nil {
 		return parsedTime, nil
@@ -70,5 +72,24 @@ func parseRelativeTime(value string) (time.Time, error) {
 }
 
 func parseEndOfTime(value string) (time.Time, error) {
-	return time.Time{}, nil
+	now := time.Now()
+
+	switch value {
+	case "eod":
+		return time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 0, now.Location()), nil
+
+	case "eow":
+		daysToEndOfWeek := (7 - int(now.Weekday())) % 7
+		t := now.Add(time.Hour * 24 * time.Duration(daysToEndOfWeek))
+		return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, t.Location()), nil
+
+	case "eom":
+		return time.Date(now.Year(), now.Month()+1, 0, 23, 59, 59, 0, now.Location()), nil
+
+	case "eoy":
+		return time.Date(now.Year(), 13, 0, 23, 59, 59, 0, now.Location()), nil
+
+	default:
+		return time.Time{}, errors.New("")
+	}
 }

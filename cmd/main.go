@@ -33,7 +33,7 @@ func main() {
 		}
 
 		for _, todo := range todos {
-			fmt.Println(todo)
+			fmt.Printf("%+v\n", todo)
 		}
 
 		return
