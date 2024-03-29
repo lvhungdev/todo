@@ -7,6 +7,7 @@ import (
 	"github.com/lvhungdev/todo/core"
 	"github.com/lvhungdev/todo/parser"
 	"github.com/lvhungdev/todo/repo"
+	"github.com/lvhungdev/todo/ui"
 )
 
 func main() {
@@ -32,10 +33,7 @@ func main() {
 			return
 		}
 
-		for _, todo := range todos {
-			fmt.Printf("%+v\n", todo)
-		}
-
+		printTodoList(todos)
 		return
 
 	case parser.CmdAdd:
@@ -50,4 +48,17 @@ func main() {
 	default:
 		return
 	}
+}
+
+func printTodoList(todos []core.Todo) {
+	header := []string{"Id", "Name", "Due"}
+	content := [][]string{}
+
+	for _, t := range todos {
+		c := []string{fmt.Sprint(t.Id), t.Name, t.DueDate.String()}
+		content = append(content, c)
+	}
+
+	table := ui.NewTable(header, content)
+	fmt.Print(table.Build())
 }
