@@ -55,7 +55,7 @@ func printTodoList(todos []core.Todo) {
 	content := [][]string{}
 
 	for _, t := range todos {
-		c := []string{fmt.Sprint(t.Id), t.Name, t.DueDate.String()}
+		c := []string{fmt.Sprint(t.Id), t.Name, ui.GetRelativeTime(t.DueDate)}
 		content = append(content, c)
 	}
 
