@@ -6,6 +6,10 @@ import (
 )
 
 func GetRelativeTime(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+
 	now := time.Now()
 	duration := now.Sub(t)
 	seconds := int(duration.Seconds())
