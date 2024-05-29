@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	s, err := storage.NewStore("./todo.db?parseTime=true")
+	s, err := storage.NewStore("./todo.db")
 	if err != nil {
 		panic(err)
 	}
@@ -32,12 +32,12 @@ func main() {
 	case command.List:
 		printRecords(t)
 	case command.Add:
-		addNewRecord(t, cmd.Name, cmd.DueDate)
+		addNewRecord(t, cmd.Name, cmd.DueDate, cmd.Priority)
 	}
 }
 
-func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time) {
-	if err := t.Add(name, dueDate); err != nil {
+func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time, pri tracker.Priority) {
+	if err := t.Add(name, dueDate, pri); err != nil {
 		panic(err)
 	}
 	fmt.Println("Added")
@@ -46,14 +46,13 @@ func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time) {
 func printRecords(t *tracker.Tracker) {
 	records := t.ListActive()
 
-	header := []string{"Id", "Name", "Due"}
+	header := []string{"Id", "Name", "Due", "Pri"}
 	content := [][]string{}
 
 	for i, r := range records {
-		c := []string{fmt.Sprint(i + 1), r.Name, ui.GetRelativeTime(r.DueDate)}
+		c := []string{fmt.Sprint(i + 1), r.Name, ui.RelativeTime(r.DueDate), ui.Priority(r.Priority)}
 		content = append(content, c)
 	}
 
-	table := ui.NewTable(header, content)
-	fmt.Print(table.Build())
+	fmt.Print(ui.Table(header, content))
 }

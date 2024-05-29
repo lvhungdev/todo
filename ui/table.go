@@ -2,12 +2,17 @@ package ui
 
 import "strings"
 
-type Table struct {
+func Table(header []string, content [][]string) string {
+	t := newTable(header, content)
+	return t.build()
+}
+
+type table struct {
 	header  []string
 	content [][]string
 }
 
-func NewTable(header []string, content [][]string) Table {
+func newTable(header []string, content [][]string) table {
 	for _, c := range content {
 		if len(c) != len(header) {
 			panic("header and content do not have the same length")
@@ -28,13 +33,13 @@ func NewTable(header []string, content [][]string) Table {
 		}
 	}
 
-	return Table{
+	return table{
 		header:  filteredHeader,
 		content: filteredContent,
 	}
 }
 
-func (t Table) Build() string {
+func (t table) build() string {
 	result := ""
 
 	maxLenEachCol := getMaxLenEachCol(append(t.content, t.header))

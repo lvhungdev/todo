@@ -30,13 +30,13 @@ func (t *Tracker) ListActive() []Record {
 	return t.records
 }
 
-func (t *Tracker) Add(name string, dueDate time.Time) error {
+func (t *Tracker) Add(name string, dueDate time.Time, priority Priority) error {
 	r := Record{
 		Name:          name,
 		CreatedDate:   time.Now(),
 		CompletedDate: time.Time{},
 		DueDate:       dueDate,
-		Priority:      PriNone,
+		Priority:      priority,
 	}
 
 	if err := t.repo.CreateRecord(r); err != nil {

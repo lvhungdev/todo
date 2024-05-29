@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/lvhungdev/todo/tracker"
 )
 
 type Command interface {
@@ -24,8 +26,9 @@ type List struct {
 
 type Add struct {
 	baseCommand
-	Name    string
-	DueDate time.Time
+	Name     string
+	DueDate  time.Time
+	Priority tracker.Priority
 }
 
 func Parse(args []string) (Command, error) {
@@ -54,7 +57,7 @@ func parseAddCommand(args []string) (Command, error) {
 
 	nameArgs := []string{}
 	dueDate := time.Time{}
-	// priority := core.PriNone
+	priority := tracker.PriNone
 
 	for _, arg := range args {
 		opt := strings.Split(arg, "=")
@@ -70,8 +73,19 @@ func parseAddCommand(args []string) (Command, error) {
 			if err != nil {
 				return nil, err
 			}
+
 		case "pri":
-			break
+			switch opt[1] {
+			case "n":
+				priority = tracker.PriNone
+			case "l":
+				priority = tracker.PriLow
+			case "m":
+				priority = tracker.PriMedium
+			case "h":
+				priority = tracker.PriHigh
+			}
+
 		default:
 			return nil, fmt.Errorf("[ERR] unknown option %v", opt[0])
 		}
@@ -81,5 +95,6 @@ func parseAddCommand(args []string) (Command, error) {
 		baseCommand: baseCommand{time.Now()},
 		Name:        strings.Join(nameArgs, " "),
 		DueDate:     dueDate,
+		Priority:    priority,
 	}, nil
 }

@@ -16,5 +16,5 @@ const (
 	PriNone Priority = iota
 	PriLow
 	PriMedium
-	PriHeight
+	PriHigh
 )

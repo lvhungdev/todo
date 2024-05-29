@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func GetRelativeTime(t time.Time) string {
+func RelativeTime(t time.Time) string {
 	if t.IsZero() {
 		return ""
 	}
