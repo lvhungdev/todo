@@ -1,6 +1,10 @@
 package ui
 
-import "github.com/lvhungdev/todo/tracker"
+import (
+	"strconv"
+
+	"github.com/lvhungdev/todo/tracker"
+)
 
 func Priority(priority tracker.Priority) string {
 	switch priority {
@@ -15,4 +19,12 @@ func Priority(priority tracker.Priority) string {
 	default:
 		return ""
 	}
+}
+
+func Urgency(urgency float64) string {
+	if urgency == 0.0 {
+		return ""
+	}
+
+	return strconv.FormatFloat(urgency, 'f', 2, 64)
 }

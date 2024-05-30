@@ -1,6 +1,7 @@
 package tracker
 
 import (
+	"sort"
 	"time"
 )
 
@@ -20,10 +21,13 @@ func NewTracker(repo Repo) (*Tracker, error) {
 		return nil, err
 	}
 
-	return &Tracker{
+	t := &Tracker{
 		repo:    repo,
 		records: records,
-	}, nil
+	}
+	t.sortRecords()
+
+	return t, nil
 }
 
 func (t *Tracker) ListActive() []Record {
@@ -44,5 +48,13 @@ func (t *Tracker) Add(name string, dueDate time.Time, priority Priority) error {
 	}
 
 	t.records = append(t.records, r)
+	t.sortRecords()
+
 	return nil
+}
+
+func (t *Tracker) sortRecords() {
+	sort.Slice(t.records, func(i, j int) bool {
+		return t.records[i].Urgency() > t.records[j].Urgency()
+	})
 }

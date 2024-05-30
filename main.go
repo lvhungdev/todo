@@ -46,11 +46,17 @@ func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time, pri tracke
 func printRecords(t *tracker.Tracker) {
 	records := t.ListActive()
 
-	header := []string{"Id", "Name", "Due", "Pri"}
+	header := []string{"Id", "Name", "Due", "Pri", "Urg"}
 	content := [][]string{}
 
 	for i, r := range records {
-		c := []string{fmt.Sprint(i + 1), r.Name, ui.RelativeTime(r.DueDate), ui.Priority(r.Priority)}
+		c := []string{
+			fmt.Sprint(i + 1),
+			r.Name,
+			ui.RelativeTime(r.DueDate),
+			ui.Priority(r.Priority),
+			ui.Urgency(r.Urgency()),
+		}
 		content = append(content, c)
 	}
 
