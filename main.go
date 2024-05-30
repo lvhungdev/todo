@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -14,18 +15,19 @@ import (
 func main() {
 	s, err := storage.NewStore("./todo.db")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer s.Close()
 
 	t, err := tracker.NewTracker(s)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	cmd, err := command.Parse(os.Args[1:])
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 
 	switch cmd := cmd.(type) {
@@ -37,10 +39,13 @@ func main() {
 }
 
 func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time, pri tracker.Priority) {
-	if err := t.Add(name, dueDate, pri); err != nil {
-		panic(err)
+	index, err := t.Add(name, dueDate, pri)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
-	fmt.Println("Added")
+
+	fmt.Printf("added a record with Id %v\n", index+1)
 }
 
 func printRecords(t *tracker.Tracker) {

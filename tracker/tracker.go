@@ -34,7 +34,7 @@ func (t *Tracker) ListActive() []Record {
 	return t.records
 }
 
-func (t *Tracker) Add(name string, dueDate time.Time, priority Priority) error {
+func (t *Tracker) Add(name string, dueDate time.Time, priority Priority) (int, error) {
 	r := Record{
 		Name:          name,
 		CreatedDate:   time.Now(),
@@ -44,13 +44,21 @@ func (t *Tracker) Add(name string, dueDate time.Time, priority Priority) error {
 	}
 
 	if err := t.repo.CreateRecord(r); err != nil {
-		return err
+		return 0, err
 	}
 
 	t.records = append(t.records, r)
 	t.sortRecords()
 
-	return nil
+	index := -1
+	for i, record := range t.records {
+		if record.CreatedDate == r.CreatedDate {
+			index = i
+			break
+		}
+	}
+
+	return index, nil
 }
 
 func (t *Tracker) sortRecords() {
