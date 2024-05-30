@@ -50,6 +50,9 @@ func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time, pri tracke
 
 func printRecords(t *tracker.Tracker) {
 	records := t.ListActive()
+	if len(records) == 0 {
+		fmt.Println("empty")
+	}
 
 	header := []string{"Id", "Name", "Due", "Pri", "Urg"}
 	content := [][]string{}
