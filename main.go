@@ -46,6 +46,7 @@ func listNextRecord(t *tracker.Tracker) {
 	records := t.GetActive()
 	if len(records) == 0 {
 		fmt.Println("empty")
+		return
 	}
 
 	fmt.Println(ui.Record(records[0]))
