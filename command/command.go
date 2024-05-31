@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -31,6 +32,11 @@ type Add struct {
 	Priority tracker.Priority
 }
 
+type Complete struct {
+	baseCommand
+	Index int
+}
+
 func Parse(args []string) (Command, error) {
 	if len(args) == 0 {
 		return parseListCommand()
@@ -41,6 +47,8 @@ func Parse(args []string) (Command, error) {
 		return parseListCommand()
 	case "add":
 		return parseAddCommand(args[1:])
+	case "cmp":
+		return parseCompleteCommand(args[1:])
 	default:
 		return nil, fmt.Errorf("[ERR] unknown command: %s", args[0])
 	}
@@ -96,5 +104,21 @@ func parseAddCommand(args []string) (Command, error) {
 		Name:        strings.Join(nameArgs, " "),
 		DueDate:     dueDate,
 		Priority:    priority,
+	}, nil
+}
+
+func parseCompleteCommand(args []string) (Command, error) {
+	if len(args) == 0 {
+		return nil, fmt.Errorf("[ERR] id is required")
+	}
+
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		return nil, fmt.Errorf("[ERR] invalid id format: %s", args[0])
+	}
+
+	return Complete{
+		baseCommand: baseCommand{time.Now()},
+		Index:       id - 1,
 	}, nil
 }

@@ -1,13 +1,17 @@
 package tracker
 
 import (
+	"fmt"
 	"sort"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Repo interface {
 	GetAllActiveRecords() ([]Record, error)
 	CreateRecord(Record) error
+	UpdateRecord(Record) error
 }
 
 type Tracker struct {
@@ -31,11 +35,19 @@ func NewTracker(repo Repo) (*Tracker, error) {
 }
 
 func (t *Tracker) ListActive() []Record {
-	return t.records
+	result := []Record{}
+	for _, r := range t.records {
+		if !r.Completed() {
+			result = append(result, r)
+		}
+	}
+
+	return result
 }
 
 func (t *Tracker) Add(name string, dueDate time.Time, priority Priority) (int, error) {
 	r := Record{
+		Id:            uuid.NewString(),
 		Name:          name,
 		CreatedDate:   time.Now(),
 		CompletedDate: time.Time{},
@@ -52,13 +64,22 @@ func (t *Tracker) Add(name string, dueDate time.Time, priority Priority) (int, e
 
 	index := -1
 	for i, record := range t.records {
-		if record.CreatedDate == r.CreatedDate {
+		if record.Id == r.Id {
 			index = i
 			break
 		}
 	}
 
 	return index, nil
+}
+
+func (t *Tracker) Complete(index int) error {
+	if index < 0 || index >= len(t.records) {
+		return fmt.Errorf("[ERR] invalid index: %d", index)
+	}
+
+	t.records[index].CompletedDate = time.Now()
+	return t.repo.UpdateRecord(t.records[index])
 }
 
 func (t *Tracker) sortRecords() {

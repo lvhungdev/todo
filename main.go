@@ -35,26 +35,19 @@ func main() {
 		printRecords(t)
 	case command.Add:
 		addNewRecord(t, cmd.Name, cmd.DueDate, cmd.Priority)
+	case command.Complete:
+		completeRecord(t, cmd.Index)
 	}
-}
-
-func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time, pri tracker.Priority) {
-	index, err := t.Add(name, dueDate, pri)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Printf("added a record with Id %v\n", index+1)
 }
 
 func printRecords(t *tracker.Tracker) {
 	records := t.ListActive()
 	if len(records) == 0 {
 		fmt.Println("empty")
+		return
 	}
 
-	header := []string{"Id", "Name", "Due", "Pri", "Urg"}
+	header := []string{"id", "name", "due", "pri", "urg"}
 	content := [][]string{}
 
 	for i, r := range records {
@@ -69,4 +62,24 @@ func printRecords(t *tracker.Tracker) {
 	}
 
 	fmt.Print(ui.Table(header, content))
+}
+
+func addNewRecord(t *tracker.Tracker, name string, dueDate time.Time, pri tracker.Priority) {
+	index, err := t.Add(name, dueDate, pri)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("added record %v\n", index+1)
+}
+
+func completeRecord(t *tracker.Tracker, index int) {
+	err := t.Complete(index)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("completed record %v\n", index+1)
 }

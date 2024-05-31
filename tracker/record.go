@@ -3,6 +3,7 @@ package tracker
 import "time"
 
 type Record struct {
+	Id            string
 	Name          string
 	CreatedDate   time.Time
 	CompletedDate time.Time
