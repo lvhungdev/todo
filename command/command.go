@@ -25,6 +25,10 @@ type List struct {
 	baseCommand
 }
 
+type Next struct {
+	baseCommand
+}
+
 type Add struct {
 	baseCommand
 	Name     string
@@ -45,6 +49,8 @@ func Parse(args []string) (Command, error) {
 	switch args[0] {
 	case "list":
 		return parseListCommand()
+	case "next":
+		return parseNextCommand()
 	case "add":
 		return parseAddCommand(args[1:])
 	case "cmp":
@@ -56,6 +62,10 @@ func Parse(args []string) (Command, error) {
 
 func parseListCommand() (Command, error) {
 	return List{baseCommand{time.Now()}}, nil
+}
+
+func parseNextCommand() (Command, error) {
+	return Next{baseCommand{time.Now()}}, nil
 }
 
 func parseAddCommand(args []string) (Command, error) {

@@ -34,7 +34,7 @@ func NewTracker(repo Repo) (*Tracker, error) {
 	return t, nil
 }
 
-func (t *Tracker) ListActive() []Record {
+func (t *Tracker) GetActive() []Record {
 	result := []Record{}
 	for _, r := range t.records {
 		if !r.Completed() {
