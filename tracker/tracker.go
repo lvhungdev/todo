@@ -82,6 +82,24 @@ func (t *Tracker) Complete(index int) error {
 	return t.repo.UpdateRecord(t.records[index])
 }
 
+func (t *Tracker) Modify(index int, name *string, dueDate *time.Time, priority *Priority) error {
+	if index < 0 || index >= len(t.records) {
+		return fmt.Errorf("[ERR] invalid index: %d", index)
+	}
+
+	if name != nil && *name != "" {
+		t.records[index].Name = *name
+	}
+	if dueDate != nil {
+		t.records[index].DueDate = *dueDate
+	}
+	if priority != nil {
+		t.records[index].Priority = *priority
+	}
+
+	return t.repo.UpdateRecord(t.records[index])
+}
+
 func (t *Tracker) sortRecords() {
 	sort.Slice(t.records, func(i, j int) bool {
 		return t.records[i].Urgency() > t.records[j].Urgency()

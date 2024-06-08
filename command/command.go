@@ -41,6 +41,14 @@ type Complete struct {
 	Index int
 }
 
+type Modify struct {
+	baseCommand
+	Index    int
+	Name     *string
+	DueDate  *time.Time
+	Priority *tracker.Priority
+}
+
 func Parse(args []string) (Command, error) {
 	if len(args) == 0 {
 		return parseListCommand()
@@ -55,6 +63,8 @@ func Parse(args []string) (Command, error) {
 		return parseAddCommand(args[1:])
 	case "cmp":
 		return parseCompleteCommand(args[1:])
+	case "mod":
+		return parseModifyCommand(args[1:])
 	default:
 		return nil, fmt.Errorf("[ERR] unknown command: %s", args[0])
 	}
@@ -130,5 +140,63 @@ func parseCompleteCommand(args []string) (Command, error) {
 	return Complete{
 		baseCommand: baseCommand{time.Now()},
 		Index:       id - 1,
+	}, nil
+}
+
+func parseModifyCommand(args []string) (Command, error) {
+	if len(args) == 0 {
+		return nil, fmt.Errorf("[ERR] id is required")
+	}
+
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		return nil, fmt.Errorf("[ERR] invalid id format: %s", args[0])
+	}
+
+	var name *string
+	var dueDate *time.Time
+	var priority *tracker.Priority
+
+	for _, arg := range args[1:] {
+		opt := strings.Split(arg, "=")
+
+		switch opt[0] {
+		case "name":
+			name = &opt[1]
+
+		case "due":
+			due, err := parseTime(opt[1])
+			dueDate = &due
+			if err != nil {
+				return nil, err
+			}
+
+		case "pri":
+			switch opt[1] {
+			case "n":
+				pri := tracker.PriNone
+				priority = &pri
+			case "l":
+				pri := tracker.PriLow
+				priority = &pri
+			case "m":
+				pri := tracker.PriMedium
+				priority = &pri
+			case "h":
+				pri := tracker.PriHigh
+				priority = &pri
+			}
+
+		default:
+			return nil, fmt.Errorf("[ERR] unknown option %v", opt[0])
+		}
+	}
+
+	return Modify{
+		baseCommand: baseCommand{time.Now()},
+		Index:       id - 1,
+		Name:        name,
+		DueDate:     dueDate,
+		Priority:    priority,
 	}, nil
 }

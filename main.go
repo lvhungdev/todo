@@ -46,6 +46,8 @@ func main() {
 		addNewRecord(t, cmd.Name, cmd.DueDate, cmd.Priority)
 	case command.Complete:
 		completeRecord(t, cmd.Index)
+	case command.Modify:
+		modifyRecord(t, cmd.Index, cmd.Name, cmd.DueDate, cmd.Priority)
 	}
 }
 
@@ -76,4 +78,13 @@ func completeRecord(t *tracker.Tracker, index int) {
 	}
 
 	fmt.Printf("completed record %v\n", index+1)
+}
+
+func modifyRecord(t *tracker.Tracker, index int, name *string, dueDate *time.Time, pri *tracker.Priority) {
+	if err := t.Modify(index, name, dueDate, pri); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("modified record %v\n", index+1)
 }
