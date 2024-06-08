@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"time"
 
 	"github.com/lvhungdev/todo/command"
@@ -13,7 +14,13 @@ import (
 )
 
 func main() {
-	s, err := storage.NewStore("./todo.db")
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("[WRN] Failed to get home dir, using current dir to store data instead")
+		homeDir = "."
+	}
+
+	s, err := storage.NewStore(path.Join(homeDir, "todo.db"))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -19,21 +19,19 @@ func parseTime(value string) (time.Time, error) {
 	return time.Time{}, errors.New(fmt.Sprintf("[ERR] invalid time format %v", value))
 }
 
-// TODO timezone for some reason not working
-// fix this
 func parseAbsoluteTime(value string) (time.Time, error) {
 	if parsedTime, err := time.Parse("2006-01-02T15:04:05", value); err == nil {
 		return parsedTime, nil
 	} else if parsedTime, err := time.Parse("2006-01-02", value); err == nil {
-		newParsedTime := time.Date(parsedTime.Year(), parsedTime.Month(), parsedTime.Day(), 23, 59, 59, 0, parsedTime.Location())
+		newParsedTime := time.Date(parsedTime.Year(), parsedTime.Month(), parsedTime.Day(), 23, 59, 59, 0, time.Local)
 		return newParsedTime, nil
 	} else if parsedTime, err := time.Parse("15:04:05", value); err == nil {
 		now := time.Now()
-		newParsedTime := time.Date(now.Year(), now.Month(), now.Day(), parsedTime.Hour(), parsedTime.Minute(), parsedTime.Second(), parsedTime.Nanosecond(), parsedTime.Location())
+		newParsedTime := time.Date(now.Year(), now.Month(), now.Day(), parsedTime.Hour(), parsedTime.Minute(), parsedTime.Second(), parsedTime.Nanosecond(), time.Local)
 		return newParsedTime, nil
 	} else if parsedTime, err := time.Parse("15:04", value); err == nil {
 		now := time.Now()
-		newParsedTime := time.Date(now.Year(), now.Month(), now.Day(), parsedTime.Hour(), parsedTime.Minute(), parsedTime.Second(), parsedTime.Nanosecond(), parsedTime.Location())
+		newParsedTime := time.Date(now.Year(), now.Month(), now.Day(), parsedTime.Hour(), parsedTime.Minute(), parsedTime.Second(), parsedTime.Nanosecond(), time.Local)
 		return newParsedTime, nil
 	}
 
